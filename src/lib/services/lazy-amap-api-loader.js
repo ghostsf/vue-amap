@@ -6,7 +6,8 @@ const DEFAULT_AMP_CONFIG = {
   protocol: 'https',
   hostAndPath: 'webapi.amap.com/maps',
   plugin: [],
-  callback: 'amapInitComponent'
+  callback: 'amapInitComponent',
+  securityConfig: null
 };
 
 export default class AMapAPILoader {
@@ -27,6 +28,14 @@ export default class AMapAPILoader {
   load() {
     if (this._window.AMap && this._window.AMap.Map) {
       return this.loadUIAMap();
+    }
+
+    /**
+     * 自2021年12月02日升级，升级之后所申请的 key 必须配备安全密钥 jscode 一起使用
+     * @see https://lbs.amap.com/api/javascript-api/guide/abc/prepare
+     */
+    if(this._config.securityConfig){
+      this._window._AMapSecurityConfig = this._config.securityConfig
     }
 
     if (this._scriptLoadingPromise) return this._scriptLoadingPromise;
